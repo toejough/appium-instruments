@@ -1,6 +1,6 @@
 // transpile:mocha
 
-import { instruments } from '../lib/instruments';
+import { Instruments, quickLaunch } from '../lib/instruments';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mochawait';
@@ -10,6 +10,12 @@ chai.use(chaiAsPromised);
 
 describe('sample', () => {
   it('should exsit',async () => {
-    should.exist(instruments);
+    should.exist(Instruments);
+  });
+});
+
+describe('quickLaunch', () => {
+  it('should terminate', async () => {
+    await quickLaunch("iPhone 6 (8.3 Simulator)");
   });
 });

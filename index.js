@@ -1,5 +1,5 @@
 // transpile:main
 
-import { default as instruments } from './lib/instruments.js';
+import { Instruments, quickLaunch } from './lib/instruments.js';
 
-export { instruments };
+export { Instruments, quickLaunch };
