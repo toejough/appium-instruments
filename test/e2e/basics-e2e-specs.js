@@ -1,16 +1,15 @@
 // transpile:mocha
 
-import { Instruments, utils } from '../..';
+import { Instruments } from '../..';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import 'mochawait';
 import path from 'path';
 import _ from 'lodash';
-import { fs, rimraf } from 'appium-support';
+import { killAllSimulators } from 'appium-ios-simulator';
+import { fs } from 'appium-support';
 import { exec } from 'teen_process';
 import { getAvailableDevices } from '../../lib/utils';
 import { retry } from 'asyncbox';
-import testAppPath from 'ios-test-app';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -23,7 +22,7 @@ describe('instruments tests', function () {
 
   async function newInstrument(opts) {
     _.extend(opts, {
-      app: path.resolve(__dirname, '..', '..', '..', 'node_modules', 'ios-test-app', testAppPath[1]),
+      app: path.resolve(__dirname, '..', '..', '..', 'assets', 'TestApp.app'),
       bootstrap: path.resolve(__dirname, '../assets/bootstrap.js'),
       simulatorSdkAndDevice: 'iPhone 6 (8.1 Simulator)'
     });
@@ -35,7 +34,7 @@ describe('instruments tests', function () {
     let instruments;
 
     it('should launch' + appendDesc, async () => {
-      await utils.killAllSimulators();
+      await killAllSimulators();
       instruments = await newInstrument(opts);
       if (checks.afterCreate){
         await checks.afterCreate(instruments);
@@ -71,11 +70,11 @@ describe('instruments tests', function () {
         await fs.mkdir(TEMP_DIR);
       } catch (e) {}
 
-      await rimraf(altTmpDir);
+      await fs.rimraf(altTmpDir);
     });
 
     after(async function () {
-      await rimraf(TEMP_DIR);
+      await fs.rimraf(TEMP_DIR);
     });
 
     test(" (1)", {
@@ -111,11 +110,11 @@ describe('instruments tests', function () {
         await fs.mkdir(TEMP_DIR);
       } catch (e) {}
 
-      await rimraf(altTraceDir);
+      await fs.rimraf(altTraceDir);
     });
 
     after(async function () {
-      await rimraf(TEMP_DIR);
+      await fs.rimraf(TEMP_DIR);
     });
 
     test(" (1)", {
@@ -149,7 +148,7 @@ describe('instruments tests', function () {
 
   describe("shutdown without startup", function () {
     it('should launch', async function () {
-      await utils.killAllSimulators();
+      await killAllSimulators();
       let instruments = await newInstrument({launchTimeout: 60000});
       await instruments.shutdown();
     });
@@ -157,7 +156,7 @@ describe('instruments tests', function () {
 
   // works only on 7.1
   describe("getting devices", function () {
-    before(async () => { await utils.killAllSimulators(); });
+    before(async () => { await killAllSimulators(); });
 
     it('should get all available devices', async function () {
       let iosVer;
